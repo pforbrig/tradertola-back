@@ -28,7 +28,8 @@ create table tournaments (
 create table stocks (
 	ticker text primary key unique,
   	name text not null,
-  	logo text
+  	logo text,
+    price smallint
 );
 
 create table userStocks (

@@ -35,16 +35,23 @@ const actualPrice = async (req, res) => {
 const postAllStocks = async (req, res) => {
 
     try {
-        const response = await brapAxiosInstance.get(`list?sortBy=volume&sortOrder=desc&limit=1`)
+        const response = await brapAxiosInstance.get(`list?sortBy=volume&sortOrder=desc&limit=2500`)
         const stocks = response.data.stocks;
-        const allStocks = [];
+        const allStocks = await knex('stocks');
+        const newStocks = [];
 
         stocks.forEach(stock => {
             const actualStock = { 'ticker': stock.stock, 'name': stock.name, 'logo': stock.logo, 'price': Math.round(stock.close * 100) }
-            allStocks.push(actualStock);
+            const stockExists = allStocks.find(stock => stock.ticker === actualStock.ticker);
+            if (!stockExists) {
+                newStocks.push(actualStock);
+            }
         });
+        console.log(newStocks)
+        if (newStocks.length > 0) {
+            await knex('stocks').insert(newStocks).returning('*');
+        };
 
-        //await knex('stocks').insert(allStocks).returning('*');
         return res.status(200).json('Todas as ações foram atualizadas!');
 
     } catch (error) {
