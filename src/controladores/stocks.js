@@ -1,5 +1,5 @@
-const knex = require('../conexao');
-const instaciaAxiosBrapi = require('../servicos/brapi');
+const knex = require('../connection');
+const brapAxiosInstance = require('../services/brapi');
 
 const buyStock = async (req, res) => {
     const { ticker, quantity } = req.body;
@@ -14,17 +14,17 @@ const buyStock = async (req, res) => {
     }
 }
 
-const precoAtual = async (req, res) => {
+const actualPrice = async (req, res) => {
     const { ticker } = req.body;
 
     try {
 
-        const response = await instaciaAxiosBrapi.get(`${ticker}`)
+        const response = await brapAxiosInstance.get(`${ticker}`)
 
-        const preco = response.data.results[0].regularMarketPrice
+        const price = response.data.results[0].regularMarketPrice
 
 
-        return res.status(200).json(process.env.DB_HOST);
+        return res.status(200).json(price);
 
     } catch (error) {
         return res.status(400).json(error.message);
@@ -35,16 +35,16 @@ const precoAtual = async (req, res) => {
 const postAllStocks = async (req, res) => {
 
     try {
-        const response = await instaciaAxiosBrapi.get(`list?sortBy=volume&sortOrder=desc&limit=2500`)
+        const response = await brapAxiosInstance.get(`list?sortBy=volume&sortOrder=desc&limit=1`)
         const stocks = response.data.stocks;
         const allStocks = [];
 
         stocks.forEach(stock => {
-            const actualStock = { 'ticker': stock.stock, 'name': stock.name, 'logo': stock.logo }
+            const actualStock = { 'ticker': stock.stock, 'name': stock.name, 'logo': stock.logo, 'price': Math.round(stock.close * 100) }
             allStocks.push(actualStock);
         });
 
-        await knex('stocks').insert(allStocks).returning('*');
+        //await knex('stocks').insert(allStocks).returning('*');
         return res.status(200).json('Todas as ações foram atualizadas!');
 
     } catch (error) {
@@ -52,4 +52,4 @@ const postAllStocks = async (req, res) => {
     }
 }
 
-module.exports = { precoAtual, postAllStocks }
+module.exports = { actualPrice, postAllStocks }

@@ -1,7 +1,7 @@
 const axios = require('axios');
 
-const instaciaAxiosBrapi = axios.create({
+const brapiAxiosInstance = axios.create({
     baseURL: 'https://brapi.ga/api/quote/',
 });
 
-module.exports = instaciaAxiosBrapi;
+module.exports = brapiAxiosInstance;
