@@ -12,7 +12,7 @@ const registerUser = async (req, res) => {
         const emailExists = await knex('users').where({ email }).first();
 
         if (emailExists) {
-            return res.status(400).json("O email já existe");
+            return res.status(400).json("Esse email já está cadastrado.");
         }
 
         const encryptedPassword = await bcrypt.hash(password, 10);
@@ -27,62 +27,62 @@ const registerUser = async (req, res) => {
             return res.status(400).json("O usuário não foi cadastrado.");
         }
 
-        return res.status(200).json(usuario[0]);
+        return res.status(200).json(user[0]);
 
     } catch (error) {
         return res.status(400).json(error.message);
     }
 };
 
-const obterPerfil = async (req, res) => {
-    return res.status(200).json(req.usuario);
+const getProfile = async (req, res) => {
+    return res.status(200).json(req.user);
 };
 
-const editarPerfil = async (req, res) => {
-    let { nome, email, senha, cpf, telefone } = req.body;
-    const { id } = req.usuario;
+const editProfile = async (req, res) => {
+    let { name, email, password, cpf, telephone } = req.body;
+    const { id } = req.user;
 
-    if (!nome && !email && !senha && !cpf && !telefone) {
+    if (!name && !email && !password && !cpf && !telephone) {
         return res.status(400).json('Você deve informar ao menos um campo para atualizar');
     }
 
     try {
-        const usuarioExiste = await knex('users').where({ id }).first();
+        const userExists = await knex('users').where({ id }).first();
 
-        if (!usuarioExiste) {
+        if (!userExists) {
             return res.status(404).json('Usuario não encontrado');
         }
 
-        if (senha) {
-            senha = await bcrypt.hash(senha, 10);
+        if (password) {
+            password = await bcrypt.hash(password, 10);
         }
 
-        if (email && email !== req.usuario.email) {
-            await schemaAtualizarUsuario.validate(req.body);
+        if (email && email !== req.user.email) {
+            //await schemaAtualizarUsuario.validate(req.body);
 
-            const emailUsuarioExiste = await knex('users').where({ email }).first();
+            const userEmailExists = await knex('users').where({ email }).first();
 
-            if (emailUsuarioExiste) {
+            if (userEmailExists) {
                 return res.status(400).json('O email informado já está cadastrado.');
             }
         }
 
-        const usuarioEditado = await knex('users')
+        const editedUser = await knex('users')
             .where({ id })
             .update({
-                nome,
+                name,
                 email,
-                senha,
+                password,
                 cpf,
-                telefone
+                telephone
             });
 
-        if (!usuarioEditado) {
+        if (!editedUser) {
             return res.status(400).json("O perfil não foi editado");
         }
-        const resposta = await knex('users').where({ id }).first();
+        const response = await knex('users').where({ id }).first();
 
-        return res.status(200).json(resposta);
+        return res.status(200).json(response);
 
     } catch (error) {
         return res.status(400).json(error.message);
@@ -91,6 +91,6 @@ const editarPerfil = async (req, res) => {
 
 module.exports = {
     registerUser,
-    obterPerfil,
-    editarPerfil
+    getProfile,
+    editProfile
 }
