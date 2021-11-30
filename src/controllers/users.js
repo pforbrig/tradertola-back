@@ -1,13 +1,13 @@
 const knex = require('../connection');
 const bcrypt = require('bcrypt');
-//const schemaCadastroUsuario = require('../validacoes/schemaCadastroUsuario');
+const registerUserSchema = require('../validations/registerUserSchema');
 //const schemaAtualizarUsuario = require('../validacoes/schemaAtualizarUsuario');
 
 const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
 
     try {
-        //await schemaCadastroUsuario.validate(req.body);
+        await registerUserSchema.validate(req.body);
 
         const emailExists = await knex('users').where({ email }).first();
 
