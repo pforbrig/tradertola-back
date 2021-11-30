@@ -4,6 +4,7 @@ const users = require('./controllers/users');
 const login = require('./controllers/login');
 const tournaments = require('./controllers/tournaments');
 const loginFilter = require('./filters/loginFilter');
+const tournamentFilter = require('./filters/tournamentFilter');
 
 const routes = express();
 
@@ -27,5 +28,11 @@ routes.post('/allstocks', stocks.postAllStocks);
 //tournaments
 routes.post('/createtournament', tournaments.createTournament);
 routes.post('/entertournament/:id', tournaments.enterTournament);
+
+routes.use(tournamentFilter);
+
+routes.post('/buy', stocks.buyStock);
+
+
 
 module.exports = routes;
