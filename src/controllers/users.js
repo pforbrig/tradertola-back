@@ -1,7 +1,7 @@
 const knex = require('../connection');
 const bcrypt = require('bcrypt');
 const registerUserSchema = require('../validations/registerUserSchema');
-//const schemaAtualizarUsuario = require('../validacoes/schemaAtualizarUsuario');
+const editProfileSchema = require('../validations/editProfileSchema');
 
 const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
@@ -58,7 +58,7 @@ const editProfile = async (req, res) => {
         }
 
         if (email && email !== req.user.email) {
-            //await schemaAtualizarUsuario.validate(req.body);
+            await editProfileSchema.validate(req.body);
 
             const userEmailExists = await knex('users').where({ email }).first();
 
