@@ -9,18 +9,18 @@ create table users (
 	id serial primary key,
   	name text not null,
   	email text not null unique,
-  	senha text not null,
+  	password text not null,
     cpf text,
-    telefone text
+    telephone text
 );
 
 create table tournaments (
 	id serial primary key,
   	name text not null,
   	createdAt date not null,
-  	tipo text not null,
+  	type text not null,
     endDate date,
-    startMoney smallint,
+    startMoney integer,
     user_id smallint REFERENCES users(id),
     maxStocks smallint
 );
@@ -29,7 +29,7 @@ create table stocks (
 	ticker text primary key unique,
   	name text not null,
   	logo text,
-    price smallint
+    price integer
 );
 
 create table userStocks (

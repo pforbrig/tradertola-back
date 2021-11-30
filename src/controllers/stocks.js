@@ -47,7 +47,6 @@ const postAllStocks = async (req, res) => {
                 newStocks.push(actualStock);
             }
         });
-        console.log(newStocks)
         if (newStocks.length > 0) {
             await knex('stocks').insert(newStocks).returning('*');
         };
