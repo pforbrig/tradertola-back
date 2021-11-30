@@ -16,7 +16,7 @@ const tournamentFilter = async (req, res, next) => {
 
         if (userStocks) {
             portfolio.stocks = userStocks
-        }
+        };
 
         req.portfolio = portfolio;
 

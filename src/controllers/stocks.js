@@ -5,7 +5,6 @@ const buyStock = async (req, res) => {
     const { ticker, quantity, tournament_id } = req.body;
     const { id } = req.user;
     let { money, portfoliovalue, stocks } = req.portfolio;
-    console.log(req.portfolio);
 
     try {
 
@@ -37,11 +36,11 @@ const buyStock = async (req, res) => {
                 .update({
                     quantity: quantity + userHasStock.quantity,
                     avgprice: (userHasStock.quantity * userHasStock.avgprice + quantity * stock.price) / (userHasStock.quantity + quantity)
-                })
+                });
 
             if (!updateStock) {
                 return res.status(400).json('Erro ao criar ordem de compra!');
-            }
+            };
 
         } else {
             const newUserStock = await knex('userstocks')
@@ -52,9 +51,10 @@ const buyStock = async (req, res) => {
                     quantity,
                     avgprice: stock.price,
                 });
+
             if (!newUserStock) {
                 return res.status(400).json('Erro ao criar ordem de compra!');
-            }
+            };
         };
 
 
@@ -64,6 +64,7 @@ const buyStock = async (req, res) => {
                 money: money - quantity * stock.price,
                 portfoliovalue: portfoliovalue + quantity * stock.price
             });
+
         if (!editUserDiaryPortfolio) {
             return res.status(400).json('Erro ao criar ordem de compra!');
         }
@@ -121,4 +122,14 @@ const postAllStocks = async (req, res) => {
     }
 }
 
-module.exports = { actualPrice, postAllStocks, buyStock }
+const getPortfolio = async (req, res) => {
+
+    try {
+        return res.status(200).json(req.portfolio);
+
+    } catch (error) {
+        return res.status(400).json(error.message);
+    }
+}
+
+module.exports = { actualPrice, postAllStocks, buyStock, getPortfolio }

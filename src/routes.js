@@ -32,6 +32,7 @@ routes.post('/entertournament/:id', tournaments.enterTournament);
 routes.use(tournamentFilter);
 
 routes.post('/buy', stocks.buyStock);
+routes.get('/portfolio', stocks.getPortfolio)
 
 
 
